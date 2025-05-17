@@ -59,7 +59,7 @@ class Object3D:
         self.velocity += acceleration * dt
         self.position += self.velocity * dt
         self.forces[:] = 0
-        # Collision dengan lantai
+
         if self.position[1] <= ground_height:
             self.position[1] = ground_height
             self.velocity[1] = 0

@@ -36,26 +36,17 @@ class MainScene:
 
         self.camera = Camera(offset=(0, 2, 6))
         self.clock = pygame.time.Clock()
-        gravity_toggle_key = pygame.K_h
 
-        running = True
-        while running:
+        self.running = True
+        while self.running:
             dt = self.clock.tick(60) / 1000  # detik/frame
+            self.handle_events()
 
             self.day_night.update(dt)
             self.day_night.setup_lighting()
 
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    running = False
-                if event.type == pygame.KEYDOWN:
-                    if event.key == gravity_toggle_key:
-                        self.gravity = self.gravity_moon if self.gravity == self.gravity_earth else self.gravity_earth
-                        print(
-                            f"Gravitasi diganti ke {'Bulan' if self.gravity==self.gravity_moon else 'Bumi'} ({self.gravity:.2f} m/s²)"
-                        )
-                    if event.key == pygame.K_SPACE:
-                        self.r2d2.jump()
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+            glLoadIdentity()
 
             keys = pygame.key.get_pressed()
 
@@ -68,18 +59,13 @@ class MainScene:
                 "right": keys[pygame.K_RIGHT],
                 "shift": keys[pygame.K_LSHIFT] or keys[pygame.K_RSHIFT],
             }
-            
+
             self.r2d2.walk(keymap, dt)
             self.r2d2.update(dt, gravity=self.gravity)
-
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-            glLoadIdentity()
-
             self.camera.update(self.r2d2.position, self.r2d2.yaw)
             self.camera.apply()
 
             # Gambar objek langit
-            # Gambar ground dan R2-D2
             self.draw_ground()
             self.day_night.draw_sky_objects()
 
@@ -94,6 +80,23 @@ class MainScene:
             pygame.display.flip()
 
         pygame.quit()
+
+    def handle_events(self):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                self.running = False
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_h:
+                    self.gravity = (
+                        self.gravity_moon
+                        if self.gravity == self.gravity_earth
+                        else self.gravity_earth
+                    )
+                    print(
+                        f"Gravitasi diganti ke {'Bulan' if self.gravity==self.gravity_moon else 'Bumi'} ({self.gravity:.2f} m/s²)"
+                    )
+                if event.key == pygame.K_SPACE:
+                    self.r2d2.jump()
 
     def init_gl(self):
         glEnable(GL_DEPTH_TEST)

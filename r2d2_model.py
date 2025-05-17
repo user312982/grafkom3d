@@ -22,6 +22,32 @@ def draw_sphere(radius=0.5, slices=32, stacks=16):
     gluSphere(quad, radius, slices, stacks)
     gluDeleteQuadric(quad)
 
+def draw_half_sphere(radius=0.4, slices=32, stacks=16):
+    quad = gluNewQuadric()
+    for i in range(stacks // 2, stacks):
+        lat0 = pi * (-0.5 + float(i) / stacks)
+        z0 = sin(lat0)
+        zr0 = cos(lat0)
+
+        lat1 = pi * (-0.5 + float(i + 1) / stacks)
+        z1 = sin(lat1)
+        zr1 = cos(lat1)
+
+        glBegin(GL_QUAD_STRIP)
+        for j in range(slices + 1):
+            lng = 2 * pi * float(j) / slices
+            x = cos(lng)
+            y = sin(lng)
+
+            glNormal3f(x * zr0, y * zr0, z0)
+            glVertex3f(radius * x * zr0, radius * y * zr0, radius * z0)
+
+            glNormal3f(x * zr1, y * zr1, z1)
+            glVertex3f(radius * x * zr1, radius * y * zr1, radius * z1)
+        glEnd()
+    gluDeleteQuadric(quad)
+
+
 def draw_cube(size=1.0):
     half = size / 2.0
     glBegin(GL_QUADS)
@@ -103,8 +129,8 @@ def draw_r2d2():
     
     # Dome top
     glPushMatrix()
-    glTranslatef(0, 0, 0.3)
-    draw_sphere(radius=0.4, slices=32, stacks=16)
+    glTranslatef(0, 1.2, 0.12)
+    draw_half_sphere(radius=0.4, slices=32, stacks=16)
     
     # Dome details
     glColor3f(0.1, 0.3, 0.8)
@@ -224,11 +250,15 @@ def draw_r2d2():
 
         # Tempel di sisi badan dan cukup rendah
         glTranslatef(side * 0.60, 0, -0.5)  # sisi badan (x), tinggi tengah (z)
-        glRotatef(20, 1, 0, 0)            # arahkan ke bawah (rotasi ke bawah)
+        glRotatef(180, 1, 0, 0)            # arahkan ke bawah (rotasi ke bawah)
 
         # Bagian atas lengan (kecil)
+
         glColor3f(0.8, 0.8, 0.8)
         glPushMatrix()
+        glTranslatef(side * -0.05, 0, 0)
+        glRotatef(5 * side, 0, 1, 0)
+        glRotatef(-5 * -side, 0, 1, 0)
         glScalef(0.1, 0.1, 0.4)  # segmen atas, lebih kecil
         draw_cube()
         glPopMatrix()
@@ -243,8 +273,8 @@ def draw_r2d2():
         # Tool di ujung lengan
         glColor3f(0.3, 0.3, 0.3)
         glPushMatrix()
-        glTranslatef(0, 0, 0.8)
-        glRotatef(90, 1, 0, 0)
+        glTranslatef(0, 0, 0.6)
+        glRotatef(0, 1, 0, 0)
         draw_cylinder(radius=0.05, height=0.2)
         glPopMatrix()
 

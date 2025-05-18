@@ -129,8 +129,8 @@ def draw_r2d2():
     
     # Dome top
     glPushMatrix()
-    glTranslatef(0, 1.2, 0.12)
-    draw_half_sphere(radius=0.4, slices=32, stacks=16)
+    glTranslatef(0, -0.05, 0.005)
+    draw_half_sphere(radius=0.50, slices=32, stacks=16)
     
     # Dome details
     glColor3f(0.1, 0.3, 0.8)

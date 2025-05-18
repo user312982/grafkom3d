@@ -9,9 +9,9 @@ class Camera:
         self.position = np.array([0.0, 0.5, 0.0], dtype=float)
 
     def update(self, keymap, position, yaw):
-        if keymap.get("space", False):
+        if keymap.get("up", False):
             self.offset[1] += 0.1
-        if keymap.get("ctrl", False):
+        if keymap.get("down", False):
             self.offset[1] -= 0.1
 
         self.position = np.array(position, dtype=float)

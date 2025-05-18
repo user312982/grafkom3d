@@ -68,8 +68,8 @@ class MainScene:
                 "left": keys[pygame.K_LEFT],
                 "right": keys[pygame.K_RIGHT],
                 "shift": keys[pygame.K_LSHIFT] or keys[pygame.K_RSHIFT],
-                "space": keys[pygame.K_SPACE],
-                "ctrl": keys[pygame.K_LCTRL] or keys[pygame.K_RCTRL],
+                "up": keys[pygame.K_UP],
+                "down": keys[pygame.K_DOWN],
             }
 
             self.r2d2.update(dt, keymap, gravity=self.gravity)

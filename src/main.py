@@ -29,6 +29,16 @@ class MainScene:
             max_speed=3.0,
             run_multiplier=3.0,
         )
+
+        self.circle = Object3D(
+            position=[5, 50, 0.0],
+            mass=1.0,
+            speed=3.0,
+            jump_speed=5.0,
+            max_speed=3.0,
+            run_multiplier=3.0,
+        )
+
         self.gravity_earth = 9.8
         self.gravity_moon = 1.62
         self.gravity = self.gravity_earth
@@ -58,12 +68,12 @@ class MainScene:
                 "left": keys[pygame.K_LEFT],
                 "right": keys[pygame.K_RIGHT],
                 "shift": keys[pygame.K_LSHIFT] or keys[pygame.K_RSHIFT],
+                "space": keys[pygame.K_SPACE],
+                "ctrl": keys[pygame.K_LCTRL] or keys[pygame.K_RCTRL],
             }
 
-            self.r2d2.walk(keymap, dt)
-            self.r2d2.update(dt, gravity=self.gravity)
-            self.camera.update(self.r2d2.position, self.r2d2.yaw)
-            self.camera.apply()
+            self.r2d2.update(dt, keymap, gravity=self.gravity)
+            self.camera.update(keymap, self.r2d2.position, self.r2d2.yaw)
 
             # Gambar objek langit
             self.draw_ground()
@@ -74,6 +84,14 @@ class MainScene:
             glTranslatef(*self.r2d2.position)
             glRotatef(self.r2d2.yaw, 0, 1, 0)
             draw_r2d2()
+            glPopMatrix()
+
+            glPushMatrix()
+            glTranslatef(*self.circle.position)
+            quad = gluNewQuadric()
+            gluSphere(quad, 0.4, 32, 16)
+            self.circle.update(dt, {}, gravity=self.gravity)
+            gluDeleteQuadric(quad)
             glPopMatrix()
 
             self.draw_hud()

@@ -53,7 +53,8 @@ class Object3D:
             self.velocity[1] = self.jump_speed
             self.on_ground = False
 
-    def update(self, dt, gravity=9.8, ground_height=0.5):
+    def update(self, dt, keymap, gravity=9.8, ground_height=0.5, bounce=0.5):
+        self.walk(keymap, dt)
         self.add_force([0, -gravity * self.mass, 0])
         acceleration = self.forces / self.mass
         self.velocity += acceleration * dt
@@ -62,5 +63,14 @@ class Object3D:
 
         if self.position[1] <= ground_height:
             self.position[1] = ground_height
-            self.velocity[1] = 0
-            self.on_ground = True
+            if self.velocity[1] < 0:
+                self.velocity[1] = -self.velocity[1] * bounce
+                # If the bounce is too small, stop bouncing and set on_ground
+                # if abs(self.velocity[1]) < 1e-2:
+                #     self.velocity[1] = 0
+                #     self.on_ground = True
+                # else:
+                #     self.on_ground = False
+            else:
+                self.velocity[1] = 0
+                self.on_ground = True

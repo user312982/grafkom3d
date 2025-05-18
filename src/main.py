@@ -33,7 +33,7 @@ class MainScene:
         )
 
         self.ball = Ball(
-            position=[5, 50, 0.0],
+            position=[5, 5, 0.0],
             radius=0.4,
         )
 
@@ -68,6 +68,8 @@ class MainScene:
                 "shift": keys[pygame.K_LSHIFT] or keys[pygame.K_RSHIFT],
                 "up": keys[pygame.K_UP],
                 "down": keys[pygame.K_DOWN],
+                "z": keys[pygame.K_z],
+                "x": keys[pygame.K_x],
             }
 
             self.r2d2.update(dt, keymap, gravity=self.gravity)
@@ -87,11 +89,23 @@ class MainScene:
             glPushMatrix()
             glTranslatef(*self.ball.position)
             glRotatef(self.ball.rotation_angle, *self.ball.rotation_axis)
-            glColor3f(1.0, 1.0, 0.0)  # Yellow color
+            glColor3f(1.0, 1.0, 0.0) 
             quad = gluNewQuadric()
             gluSphere(quad, self.ball.radius, 32, 16)
-            self.ball.update(dt, gravity=self.gravity)
             gluDeleteQuadric(quad)
+            # Ball lines
+            glColor3f(0.2, 0.2, 0.2)
+            glLineWidth(2)
+            for i in range(0, 360, 45):
+                glBegin(GL_LINE_STRIP)
+                for theta in np.linspace(0, np.pi, 32):
+                    x = self.ball.radius * np.sin(theta) * np.cos(np.radians(i))
+                    y = self.ball.radius * np.cos(theta)
+                    z = self.ball.radius * np.sin(theta) * np.sin(np.radians(i))
+                    glVertex3f(x, y, z)
+                glEnd()
+
+            self.ball.update(dt, keymap, gravity=self.gravity)
             glPopMatrix()
 
             self.draw_hud()

@@ -9,10 +9,13 @@ class Ball(Object3D):
         self.rotation_axis = [0.0, 0.0, 0.0]
         self.rotation_angle = 0.0
 
-    def update(self, dt, gravity):
+    def update(self, dt, keymap, gravity):
         super().update(dt, gravity=gravity)
-        # self.add_force([10, 0, 0])
-
+        if keymap.get("z", False):
+            self.add_force([-5, 0, 0])
+        if keymap.get("x", False):
+            self.add_force([5, 0, 0])
+ 
         # Roll
         v = self.velocity.copy()
         v[1] = 0

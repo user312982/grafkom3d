@@ -81,7 +81,6 @@ class Player(Object3D):
             self.velocity[1] = self.jump_force
             self.on_ground = False
 
-    def update(self, dt, keymap=None, gravity=9.8):
+    def update(self, dt, keymap, gravity=9.8):
         super().update(dt, gravity=gravity)
-        if keymap:
-            self.walk(keymap, dt)
+        self.walk(keymap, dt)

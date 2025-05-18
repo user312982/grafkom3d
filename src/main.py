@@ -9,6 +9,8 @@ from day_night_cycle import DayNightCycle
 from hud import HUD
 from camera import Camera
 from object_3d import Object3D
+from ball import Ball
+from player import Player
 
 
 class MainScene:
@@ -21,22 +23,18 @@ class MainScene:
         self.hud = HUD(self.display)
         self.day_night = DayNightCycle()
 
-        self.r2d2 = Object3D(
+        self.r2d2 = Player(
             position=[0.0, 5, 0.0],
             mass=1.0,
-            speed=3.0,
-            jump_speed=5.0,
-            max_speed=3.0,
+            speed=4,
+            jump_force=5.0,
+            max_speed=4,
             run_multiplier=3.0,
         )
 
-        self.circle = Object3D(
+        self.ball = Ball(
             position=[5, 50, 0.0],
-            mass=1.0,
-            speed=3.0,
-            jump_speed=5.0,
-            max_speed=3.0,
-            run_multiplier=3.0,
+            radius=0.4,
         )
 
         self.gravity_earth = 9.8
@@ -87,10 +85,12 @@ class MainScene:
             glPopMatrix()
 
             glPushMatrix()
-            glTranslatef(*self.circle.position)
+            glTranslatef(*self.ball.position)
+            glRotatef(self.ball.rotation_angle, *self.ball.rotation_axis)
+            glColor3f(1.0, 1.0, 0.0)  # Yellow color
             quad = gluNewQuadric()
-            gluSphere(quad, 0.4, 32, 16)
-            self.circle.update(dt, {}, gravity=self.gravity)
+            gluSphere(quad, self.ball.radius, 32, 16)
+            self.ball.update(dt, gravity=self.gravity)
             gluDeleteQuadric(quad)
             glPopMatrix()
 

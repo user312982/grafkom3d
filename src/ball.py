@@ -11,15 +11,17 @@ class Ball(Object3D):
 
     def update(self, dt, keymap, gravity, ground_height=0.4):
         super().update(dt, gravity=gravity, ground_height=ground_height)
-        if keymap.get("z", False):
-            self.add_force([-5, 0, 0])
-        if keymap.get("x", False):
-            self.add_force([5, 0, 0])
- 
+        if self.velocity[0] < 1:
+            if keymap.get("z", False):
+                self.add_force([-500, 0, 0])
+            if keymap.get("x", False):
+                self.add_force([500, 0, 0])
+
         # Roll
         v = self.velocity.copy()
         v[1] = 0
         speed = np.linalg.norm(v)
+        print(speed)
         if speed > 1e-6:
             axis = np.cross([0, 1, 0], v)
             axis_norm = np.linalg.norm(axis)

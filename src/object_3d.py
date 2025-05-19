@@ -37,7 +37,7 @@ class Object3D:
         if self.position[1] <= ground_height:
             self.position[1] = ground_height
             if self.velocity[1] < 0:
-                self.velocity[1] = -self.velocity[1] * bounce
+                self.velocity[1] = -self.velocity[1] * bounce / (1 + self.mass)
                 if abs(self.velocity[1]) < 0.1:
                     self.velocity[1] = 0
                     self.on_ground = True

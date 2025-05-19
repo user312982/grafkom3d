@@ -25,7 +25,7 @@ class MainScene:
 
         self.r2d2 = Player(
             position=[0.0, 5, 0.0],
-            mass=1.0,
+            mass=5.0,
             speed=4,
             jump_force=5.0,
             max_speed=4,
@@ -35,12 +35,12 @@ class MainScene:
         self.ball = Ball(
             position=[5, 5, 0.0],
             radius=0.4,
+            mass=0.5,
         )
 
         self.gravity_earth = 9.8
         self.gravity_moon = 1.62
         self.gravity = self.gravity_earth
-        self.yaw = 0.0
 
         self.camera = Camera(offset=(0, 2, 6))
         self.clock = pygame.time.Clock()
@@ -170,7 +170,7 @@ class MainScene:
         self.hud.draw_text(
             f"Speed: {np.linalg.norm(self.r2d2.velocity):.1f} m/s", 20, 120
         )
-        self.hud.draw_compass(x=900, y=80, size=50, yaw=self.yaw)
+        self.hud.draw_compass(x=900, y=80, size=50, yaw=self.r2d2.yaw)
 
 
 if __name__ == "__main__":

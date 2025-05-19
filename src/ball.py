@@ -9,8 +9,8 @@ class Ball(Object3D):
         self.rotation_axis = [0.0, 0.0, 0.0]
         self.rotation_angle = 0.0
 
-    def update(self, dt, keymap, gravity):
-        super().update(dt, gravity=gravity)
+    def update(self, dt, keymap, gravity, ground_height=0.4):
+        super().update(dt, gravity=gravity, ground_height=ground_height)
         if keymap.get("z", False):
             self.add_force([-5, 0, 0])
         if keymap.get("x", False):

@@ -8,20 +8,49 @@ class Ball(Object3D):
         self.radius = radius
         self.rotation_axis = [0.0, 0.0, 0.0]
         self.rotation_angle = 0.0
+        self.force = 20
+        self.yaw = 0.0
 
     def update(self, dt, keymap, gravity, ground_height=0.4):
         super().update(dt, gravity=gravity, ground_height=ground_height)
-        if self.velocity[0] < 1:
-            if keymap.get("z", False):
-                self.add_force([-500, 0, 0])
-            if keymap.get("x", False):
-                self.add_force([500, 0, 0])
+        if keymap.get("left", False):
+            self.yaw += 90 * dt
+        if keymap.get("right", False):
+            self.yaw -= 90 * dt
+        self.yaw = round(self.yaw)
+        forward = np.array(
+            [np.sin(np.radians(self.yaw)), 0, np.cos(np.radians(self.yaw))]
+        )
+        right = np.array(
+            [np.cos(np.radians(self.yaw)), 0, -np.sin(np.radians(self.yaw))]
+        )
+        move_dir = np.array([0.0, 0.0, 0.0])
+        print("dir", move_dir)
+        print("forward", forward)
+        print("right", right)
+
+        if keymap.get("w", False):
+            move_dir += forward
+            self.add_force(forward * self.force)
+        if keymap.get("s", False):
+            move_dir -= forward
+            self.add_force(-forward * self.force)
+        if keymap.get("d", False):
+            move_dir -= right
+            self.add_force(-right * self.force)
+        if keymap.get("a", False):
+            move_dir += right
+            self.add_force(right * self.force)
+
+        if keymap.get("space", False):
+            if self.on_ground:
+                self.velocity[1] = 5
+                self.on_ground = False
 
         # Roll
         v = self.velocity.copy()
         v[1] = 0
         speed = np.linalg.norm(v)
-        print(speed)
         if speed > 1e-6:
             axis = np.cross([0, 1, 0], v)
             axis_norm = np.linalg.norm(axis)

@@ -5,8 +5,8 @@ from OpenGL.GLU import gluLookAt
 class Camera:
     def __init__(self, offset=(0, 2, 6)):
         self.offset = np.array(offset, dtype=float)
-        self.yaw = 0.0
         self.position = np.array([0.0, 0.5, 0.0], dtype=float)
+        self.yaw = 0.0
 
     def update(self, keymap, position, yaw):
         if keymap.get("up", False):

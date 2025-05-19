@@ -13,6 +13,9 @@ class Player(Object3D):
         max_speed=3.0,
         run_multiplier=3.0,
     ):
+        # antialiasing
+        # anisotropic
+        # kecepatan awal
         super().__init__(
             position=position,
             velocity=velocity,

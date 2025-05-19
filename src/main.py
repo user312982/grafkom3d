@@ -66,6 +66,7 @@ class MainScene:
                 "left": keys[pygame.K_LEFT],
                 "right": keys[pygame.K_RIGHT],
                 "shift": keys[pygame.K_LSHIFT] or keys[pygame.K_RSHIFT],
+                "space": keys[pygame.K_SPACE],
                 "up": keys[pygame.K_UP],
                 "down": keys[pygame.K_DOWN],
                 "z": keys[pygame.K_z],
@@ -73,7 +74,7 @@ class MainScene:
             }
 
             self.r2d2.update(dt, keymap, gravity=self.gravity)
-            self.camera.update(keymap, self.r2d2.position, self.r2d2.yaw)
+            self.camera.update(keymap, self.ball.position, self.ball.yaw)
 
             # Gambar objek langit
             self.draw_ground()
@@ -156,6 +157,8 @@ class MainScene:
         glEnd()
 
     def draw_hud(self):
+        light_gray = (1, 1, 1)
+        glColor3f(*light_gray)
         self.hud.draw_text(f"Time: {self.day_night.get_time_text()}", 20, 30)
         self.hud.draw_text(
             f"Position: X:{self.r2d2.position[0]:.1f} Y:{self.r2d2.position[1]:.1f} Z:{self.r2d2.position[2]:.1f}",
@@ -168,7 +171,7 @@ class MainScene:
             90,
         )
         self.hud.draw_text(
-            f"Speed: {np.linalg.norm(self.r2d2.velocity):.1f} m/s", 20, 120
+            f"Speed: {np.linalg.norm(self.ball.velocity):.1f} m/s", 20, 120
         )
         self.hud.draw_compass(x=900, y=80, size=50, yaw=self.r2d2.yaw)
 

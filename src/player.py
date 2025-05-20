@@ -12,15 +12,9 @@ class Player(Object3D):
         jump_force=5.0,
         max_speed=3.0,
         run_multiplier=3.0,
+        **kwargs,
     ):
-        # antialiasing
-        # anisotropic
-        # kecepatan awal
-        super().__init__(
-            position=position,
-            velocity=velocity,
-            mass=mass,
-        )
+        super().__init__(position=position, velocity=velocity, mass=mass, **kwargs)
 
         self.speed = speed
         self.jump_force = jump_force
@@ -86,4 +80,4 @@ class Player(Object3D):
 
     def update(self, dt, keymap, gravity=9.8):
         super().update(dt, gravity=gravity)
-        self.walk(keymap, dt)
+        # self.walk(keymap, dt)

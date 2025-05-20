@@ -1,8 +1,8 @@
-from object_3d import Object3D
+from rigid_body_3d import RigidBody3D
 import numpy as np
 
 
-class Ball(Object3D):
+class Ball(RigidBody3D):
     def __init__(self, position=None, velocity=None, mass=1.0, radius=0.4, **kwargs):
         super().__init__(position=position, velocity=velocity, mass=mass, **kwargs)
         self.radius = radius
@@ -14,9 +14,9 @@ class Ball(Object3D):
     def update(self, dt, keymap, gravity, ground_height=0.4):
         super().update(dt, gravity=gravity, ground_height=ground_height)
         if keymap.get("left", False):
-            self.yaw += 90 * dt
+            self.yaw += 120 * dt
         if keymap.get("right", False):
-            self.yaw -= 90 * dt
+            self.yaw -= 120 * dt
         self.yaw = round(self.yaw)
         forward = np.array(
             [np.sin(np.radians(self.yaw)), 0, np.cos(np.radians(self.yaw))]
@@ -25,9 +25,6 @@ class Ball(Object3D):
             [np.cos(np.radians(self.yaw)), 0, -np.sin(np.radians(self.yaw))]
         )
         move_dir = np.array([0.0, 0.0, 0.0])
-        print("dir", move_dir)
-        print("forward", forward)
-        print("right", right)
 
         if keymap.get("w", False):
             move_dir += forward

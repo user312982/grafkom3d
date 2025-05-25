@@ -25,11 +25,13 @@ class MainScene:
 
         self.hud = HUD(self.display)
         self.day_night = DayNightCycle()
+        self.ball_force = 20.0
 
         self.ball = Ball(
             position=[5, 5, 0.0],
             radius=0.4,
             mass=0.5,
+            force=self.ball_force,
             bounding_box_size=(-0.35, 0.35, 0.35),
         )
 
@@ -110,6 +112,7 @@ class MainScene:
             }
 
             self.camera.update(keymap, self.ball.position, self.ball.yaw)
+
             RigidBody3D.check_all_collisions()
             CollisionShape.check_all_collisions_with_rigidbody()
             self.draw_ground()
@@ -161,7 +164,10 @@ class MainScene:
             self.ball1.update(dt, {}, gravity=self.gravity)
             glPopMatrix()
 
-            # self.draw_hud()
+            glPushMatrix()
+            self.ball.draw_arrow()
+            glPopMatrix()
+            self.draw_hud()
             pygame.display.flip()
 
         pygame.quit()
@@ -180,6 +186,10 @@ class MainScene:
                     print(
                         f"Gravitasi diganti ke {'Bulan' if self.gravity==self.gravity_moon else 'Bumi'} ({self.gravity:.2f} m/s²)"
                     )
+                if event.key == pygame.K_RIGHTBRACKET:
+                    self.ball.force += 5.0
+                if event.key == pygame.K_LEFTBRACKET:
+                    self.ball.force = max(0, self.ball.force - 5.0)
 
     def init_gl(self):
         glEnable(GL_DEPTH_TEST)
@@ -209,30 +219,33 @@ class MainScene:
     def draw_walls(self, size=20):
         glBegin(GL_QUADS)
         glColor3f(0.5, 0.5, 0.5)
+        camera_x, _, camera_z = self.camera.position
+        wall_threshold = 3.0
+
         for x in range(-size, size):
-            # wall 1
-            glVertex3f(x, 0, -size)
-            glVertex3f(x, size, -size)
-            glVertex3f(x + 1, size, -size)
-            glVertex3f(x + 1, 0, -size)
+            if abs(camera_z + size) > wall_threshold:
+                glVertex3f(x, 0, -size)
+                glVertex3f(x, size, -size)
+                glVertex3f(x + 1, size, -size)
+                glVertex3f(x + 1, 0, -size)
 
-            # wall 2
-            glVertex3f(x, 0, size)
-            glVertex3f(x + 1, 0, size)
-            glVertex3f(x + 1, size, size)
-            glVertex3f(x, size, size)
+            if abs(camera_z - size) > wall_threshold:
+                glVertex3f(x, 0, size)
+                glVertex3f(x + 1, 0, size)
+                glVertex3f(x + 1, size, size)
+                glVertex3f(x, size, size)
 
-            # wall 3
-            glVertex3f(-size, 0, x)
-            glVertex3f(-size, size, x)
-            glVertex3f(-size, size, x + 1)
-            glVertex3f(-size, 0, x + 1)
+            if abs(camera_x + size) > wall_threshold:
+                glVertex3f(-size, 0, x)
+                glVertex3f(-size, size, x)
+                glVertex3f(-size, size, x + 1)
+                glVertex3f(-size, 0, x + 1)
 
-            # wall 4
-            glVertex3f(size, 0, x)
-            glVertex3f(size, 0, x + 1)
-            glVertex3f(size, size, x + 1)
-            glVertex3f(size, size, x)
+            if abs(camera_x - size) > wall_threshold:
+                glVertex3f(size, 0, x)
+                glVertex3f(size, 0, x + 1)
+                glVertex3f(size, size, x + 1)
+                glVertex3f(size, size, x)
 
         glEnd()
 
@@ -241,7 +254,7 @@ class MainScene:
         glColor3f(*light_gray)
         self.hud.draw_text(f"Time: {self.day_night.get_time_text()}", 20, 30)
         self.hud.draw_text(
-            f"Position: X:{self.r2d2.position[0]:.1f} Y:{self.r2d2.position[1]:.1f} Z:{self.r2d2.position[2]:.1f}",
+            f"Position: X:{self.ball.position[0]:.1f} Y:{self.ball.position[1]:.1f} Z:{self.ball.position[2]:.1f}",
             20,
             60,
         )
@@ -253,7 +266,8 @@ class MainScene:
         self.hud.draw_text(
             f"Speed: {np.linalg.norm(self.ball.velocity):.1f} m/s", 20, 120
         )
-        self.hud.draw_compass(x=900, y=80, size=50, yaw=self.r2d2.yaw)
+        self.hud.draw_text(f"Target Speed: {self.ball.force} m/s", 20, 150)
+        # self.hud.draw_compass(x=900, y=80, size=50, yaw=self.r2d2.yaw)
 
 
 if __name__ == "__main__":

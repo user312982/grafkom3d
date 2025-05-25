@@ -13,6 +13,7 @@ class RigidBody3D(Object3D):
         mass=1.0,
         friction=0.2,
         bounding_box_size=None,
+        bounciness=0.5,
     ):
         RigidBody3D.instances.append(self)
 
@@ -24,6 +25,7 @@ class RigidBody3D(Object3D):
         self.forces = np.zeros(3, dtype=float)
         self.friction = friction
         self.on_ground = False
+        self.bounciness = bounciness
 
     def add_force(self, force):
         self.forces += np.array(force, dtype=float)
@@ -42,16 +44,6 @@ class RigidBody3D(Object3D):
         self.forces[:] = 0
 
         self.check_ground()
-        # self.check_wall()
-
-    def check_wall(self):
-        if self.position[0] <= -19.5 or self.position[0] >= 19.5:
-            self.position[0] = min(max(self.position[0], -19.5), 19.5)
-            self.velocity[0] = 0
-
-        if self.position[2] <= -19.5 or self.position[2] >= 19.5:
-            self.position[2] = min(max(self.position[2], -19.5), 19.5)
-            self.velocity[2] = 0
 
     def check_ground(self):
         if self.position[1] <= 0.4:
@@ -80,7 +72,7 @@ class RigidBody3D(Object3D):
         for i, obj_a in enumerate(RigidBody3D.instances):
             for obj_b in RigidBody3D.instances[i + 1 :]:
                 obj_a.check_object_collision(obj_b)
-            obj_a.draw_bounding_box()
+            # obj_a.draw_bounding_box()
 
     def get_aabb(self):
         # Returns world-space min and max of the bounding box

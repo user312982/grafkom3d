@@ -30,7 +30,6 @@ class CollisionShape(Object3D):
             if max_a[i] < min_b[i] or min_a[i] > max_b[i]:
                 overlap = False
         if overlap:
-            # Separate the rigidbody out of the collision along the axis of greatest overlap
             diffs = [
                 min(max_a[i], max_b[i]) - max(min_a[i], min_b[i]) for i in range(3)
             ]
@@ -43,8 +42,8 @@ class CollisionShape(Object3D):
                 rigidbody.position[axis] = (
                     max_a[axis] - rigidbody.bounding_box_size[0]
                 )
-            # Zero the velocity along the collision axis
-            rigidbody.velocity[axis] = 0
+
+            rigidbody.velocity[axis] = -rigidbody.velocity[axis] * getattr(rigidbody, "bounciness", 0.0)
 
     def draw_bounding_box(self):
         try:

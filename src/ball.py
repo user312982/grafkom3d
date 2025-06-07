@@ -24,11 +24,13 @@ class Ball(RigidBody3D):
 
     def update(self, dt, keymap, gravity, ground_height=0.4):
         super().update(dt, gravity=gravity, ground_height=ground_height)
+
         if keymap.get("left", False):
             self.yaw += 120 * dt
         if keymap.get("right", False):
             self.yaw -= 120 * dt
         self.yaw = round(self.yaw)
+
         forward = np.array(
             [np.sin(np.radians(self.yaw)), 0, np.cos(np.radians(self.yaw))]
         )
@@ -39,20 +41,21 @@ class Ball(RigidBody3D):
 
         if keymap.get("w", False):
             move_dir += forward
-            # self.add_force(forward * self.force)
         if keymap.get("s", False):
             move_dir -= forward
-            # self.add_force(-forward * self.force)
         if keymap.get("d", False):
             move_dir -= right
-            # self.add_force(-right * self.force)
         if keymap.get("a", False):
             move_dir += right
-            # self.add_force(right * self.force)
 
         if keymap.get("space", False):
             if self.on_ground:
                 self.velocity = forward * self.force
+
+        # Tambahan: loncat ke atas dengan tombol X
+        if keymap.get("x", False):
+            if self.on_ground:
+                self.velocity[1] = self.force  # Lompatan vertikal
 
         if keymap.get("z", False):
             self.velocity = np.array([0, 0, 0], dtype=np.float32)
@@ -68,7 +71,6 @@ class Ball(RigidBody3D):
                 self.rotation_axis = axis / axis_norm
                 angle_delta = (speed * dt) / self.radius
                 self.rotation_angle += np.degrees(angle_delta)
-        
 
     def draw_arrow(self):
         glPushMatrix()
